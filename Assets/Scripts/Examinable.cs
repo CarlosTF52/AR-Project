@@ -1,5 +1,7 @@
+
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.AR;
 
@@ -7,50 +9,59 @@ using UnityEngine.XR.Interaction.Toolkit.AR;
 public class Examinable : MonoBehaviour
 {
     [SerializeField]
-    private ExaminableManager _examinableManager;
-
-    [SerializeField]
     public float _examineScaleOffset = 1f;
 
     [SerializeField]
-    private ARScaleInteractable _scaleInteractable;
+    public GameObject _visualization;
 
     [SerializeField]
-    private ARTranslationInteractable _translationInteractable;
+    private ExamineObjectAssign _objectAssign;
 
     [SerializeField]
-    private Examinable _examinable;
+    private ExamineRotate _examineRotate;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        _examinableManager = GameObject.Find("ExaminableManager").GetComponent<ExaminableManager>();
+        _objectAssign = GameObject.Find("ExamineTarget").GetComponent<ExamineObjectAssign>();
+        
     }
 
     public void RequestExamine()
     {
-        _examinableManager.PerformExamine(this);
-        Examine();
+        
+        if (this.transform.tag == "Barrel" && _objectAssign != null )
+        {
+            _objectAssign.ShowBarrel();
+            _examineRotate = GameObject.Find("BarrelExamineObj(Clone)").GetComponent<ExamineRotate>();
+        }
+        if (this.transform.tag == "CampFire" && _objectAssign != null)
+        {
+            _objectAssign.ShowCampFire();
+            _examineRotate = GameObject.Find("CampFireExamineObj(Clone)").GetComponent<ExamineRotate>();
+        }
+        if (this.transform.tag == "Crossbow" && _objectAssign != null)
+        {
+            _objectAssign.ShowCrossbow();
+            _examineRotate = GameObject.Find("CrossbowExamineObj(Clone)").GetComponent<ExamineRotate>();
+        }
+        if (this.transform.tag == "Box" && _objectAssign != null)
+        {
+            _objectAssign.ShowBox();
+            _examineRotate = GameObject.Find("BoxExamineObj(Clone)").GetComponent<ExamineRotate>();
+        }
+
+        _visualization.SetActive(false);
+        _examineRotate.RequestRotate();
     }
 
     public void RequestUnexamine()
     {
-        _examinableManager.PerformUnexamine();
-        Place();
-    }
 
-    private void Examine()
-    {
-        _scaleInteractable.enabled = false;
-        _translationInteractable.enabled = false;
-    }
-
-    // Update is called once per frame
-    private void Place()
-    {
-        _scaleInteractable.enabled = true;
-        _translationInteractable.enabled = true;
+        _objectAssign.Destroy();
+        _visualization.SetActive(true);
     }
 
 }

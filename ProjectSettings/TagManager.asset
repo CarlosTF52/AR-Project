@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Destroyable
   - DestroySupporter
+  - Barrel
+  - BarrelExamine
+  - Target
+  - CampFire
+  - Crossbow
+  - Box
   layers:
   - Default
   - TransparentFX
